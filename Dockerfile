@@ -5,10 +5,10 @@ LABEL maintainer="L3msh0@gmail.com"
 ARG NMAP_VERSION="7.01"
 
 RUN \
-  apk add --update --no-cache \
+  apk add --upgrade --no-cache \
     ca-certificates libpcap libgcc libstdc++ libressl2.5-libcrypto libressl2.5-libssl && \
   update-ca-certificates && \
-  apk add --update --no-cache --virtual .builddeps \
+  apk add --upgrade --no-cache --virtual .builddeps \
     libpcap-dev libressl-dev lua-dev linux-headers alpine-sdk && \
   wget https://nmap.org/dist/nmap-${NMAP_VERSION}.tar.bz2 -O /tmp/nmap.tar.bz2 && \
   tar -xjf /tmp/nmap.tar.bz2 -C /tmp && \
@@ -25,7 +25,7 @@ RUN \
   make && \
   make install && \
   apk del --purge .builddeps && \
-  rm -rf /var/cache/apk/* /tmp/nmap*
+  rm -rf /tmp/nmap*
 
 VOLUME /work
 ENTRYPOINT ["/usr/bin/nmap"]
