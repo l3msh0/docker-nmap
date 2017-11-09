@@ -6,7 +6,7 @@ ARG NMAP_VERSION="7.01"
 
 RUN \
   apk add --upgrade --no-cache \
-    ca-certificates libpcap libgcc libstdc++ libressl2.5-libcrypto libressl2.5-libssl && \
+    ca-certificates libpcap libgcc libstdc++ libressl2.5-libcrypto libressl2.5-libssl libcap && \
   update-ca-certificates && \
   apk add --upgrade --no-cache --virtual .builddeps \
     libpcap-dev libressl-dev lua-dev linux-headers alpine-sdk && \
@@ -25,7 +25,10 @@ RUN \
   make && \
   make install && \
   apk del --purge .builddeps && \
-  rm -rf /tmp/nmap*
+  rm -rf /tmp/nmap* && \
+  adduser -DH nmap && \
+  setcap cap_net_raw+ep /usr/bin/nmap
 
+USER nmap
 VOLUME /work
-ENTRYPOINT ["/usr/bin/nmap"]
+ENTRYPOINT ["/usr/bin/nmap", "--privileged"]
